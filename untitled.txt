@@ -1,0 +1,244 @@
+SocialFlow AI — Master Implementation Brief for the AI Coding Agent
+
+1. Your role
+
+Act as a senior Flutter engineer, backend architect, UI/UX engineer, and integration engineer.
+
+You are building SocialFlow AI, an AI-powered social media management application for individuals, creators, small businesses, and social media management teams.
+
+The application helps users plan social content, generate captions using Meta AI, manage a content calendar, connect eligible Facebook Pages and Instagram Professional accounts, review audience interactions, obtain AI-suggested replies, and configure safe automation.
+
+Your responsibility is to build a coherent, working application—not merely produce attractive but disconnected UI screens.
+
+2. First rule: inspect before implementing
+
+Before writing or changing code:
+
+1. Inspect the existing repository and identify its current structure.
+2. Identify the framework, dependencies, architecture, completed features, and existing backend integrations.
+3. Read the README, environment configuration examples, and existing implementation notes.
+4. Identify errors, incomplete features, and architectural inconsistencies.
+5. Prepare a short implementation assessment and a proposed task sequence.
+6. Preserve working code and existing project configuration wherever possible.
+
+Do not replace the existing application with a new scaffold without a compelling technical reason.
+
+Do not assume a feature exists merely because its screen has been designed.
+
+Do not regenerate the entire codebase to solve a localized problem.
+
+3. Product and technical decisions
+
+Use the following defaults unless the existing repository has a justified, working alternative.
+
+- Frontend: Flutter.
+- Architecture: feature-first, maintainable, and testable.
+- State management: use the existing solution if appropriate; otherwise use Riverpod.
+- Navigation: use the existing router if appropriate; otherwise use GoRouter.
+- Backend and database: Supabase with PostgreSQL, authentication, storage, and row-level security.
+- Server-side integration: Supabase Edge Functions or a dedicated Node.js/TypeScript backend where persistent background processing is needed.
+- AI: the eligible Meta AI model/API required by the hackathon.
+- Social integrations: official Meta APIs only.
+- Background publishing: persistent server-side jobs, never client-side timers.
+- UI: responsive Flutter layouts for mobile first, with tablet and web support where the existing target platforms require it.
+
+Do not introduce additional frameworks or dependencies without a clear reason.
+
+Keep all AI credentials, Meta access tokens, privileged database keys, and other secrets out of the Flutter client.
+
+4. Product navigation
+
+Implement these main application destinations:
+
+1. Home / Overview
+2. Content Studio
+3. Content Calendar
+4. Engagement Inbox
+5. Analytics
+6. Accounts
+7. AI Autopilot
+8. Settings
+
+Use a consistent application shell and shared navigation. On mobile, use an appropriate bottom navigation bar and secondary navigation for less frequently used sections.
+
+The interface must follow the supplied SocialFlow AI mobile UI references: clean light surfaces, restrained blue and purple accents, clear typography, consistent spacing, rounded cards, meaningful status indicators, and minimal visual clutter.
+
+Do not attempt to reproduce every pixel of a generated mockup at the expense of usability or functional behavior.
+
+5. Build in phases
+
+Phase A — Repository assessment and foundation
+
+- Inspect the codebase.
+- Establish the folder structure.
+- Confirm dependencies and environment requirements.
+- Configure authentication and database access if already available.
+- Define shared colors, typography, spacing, components, and navigation.
+- Ensure the application builds successfully.
+
+Acceptance criteria: the application launches, navigation works, and the foundation is documented.
+
+Phase B — Responsive UI shell and demonstration data
+
+Implement the main navigation and these screens using realistic, clearly labelled demonstration data:
+
+- Dashboard.
+- Content Studio.
+- Content Calendar.
+- Engagement Inbox.
+- AI Autopilot.
+- Analytics.
+- Account Connections.
+- Settings.
+
+Create reusable widgets and models rather than duplicating entire screens.
+
+Demonstration data must be isolated from production data. Never represent simulated publishing or engagement as real Meta activity.
+
+Acceptance criteria: all screens render correctly, adapt to mobile layouts, and have working navigation and meaningful empty states.
+
+Phase C — AI content generation
+
+Implement a server-side AI service that connects to the eligible Meta AI model.
+
+Support:
+
+- Brand-aware content ideas.
+- Caption generation.
+- Tone adjustment.
+- Content strategy generation.
+- Structured output validation.
+- Loading, timeout, error, and retry states.
+
+The client must call the application backend rather than expose AI credentials.
+
+Acceptance criteria: a user can provide a topic and preferences, generate content through the configured AI service, edit the result, and save it as a draft.
+
+Phase D — Content management
+
+Implement:
+
+- Draft creation and editing.
+- Content status tracking.
+- Destination selection.
+- Media references.
+- Calendar views.
+- Scheduling forms.
+- Approval states.
+- Publishing history.
+
+Persist data through the backend.
+
+Acceptance criteria: saved drafts remain available after restarting the application, and calendar entries reflect persisted records.
+
+Phase E — Meta account integration
+
+Implement the official authorization flow and account capability detection.
+
+Prioritize eligible Facebook Pages and Instagram Professional accounts.
+
+Build an integration service that handles account metadata, authorization status, supported publishing, eligible comments, and available insights.
+
+Do not assume every connected account supports every action.
+
+If credentials, permissions, or app review are unavailable, preserve demo mode and report the missing requirements accurately.
+
+Acceptance criteria: the application can distinguish real connected accounts from demo accounts and explains which actions are actually available.
+
+Phase F — Engagement Inbox
+
+Implement:
+
+- Interaction lists.
+- Search and filters.
+- Categories and priority.
+- AI-generated reply drafts.
+- Reply editing.
+- Mark-as-reviewed and ignore actions.
+- Assignment and escalation states.
+- Real reply actions where authorized.
+
+The AI must not automatically send a reply merely because it has generated one.
+
+Acceptance criteria: an interaction can be reviewed from beginning to end, and every real action is subject to backend authorization and policy validation.
+
+Phase G — Scheduling and safe automation
+
+Implement a persistent server-side job system.
+
+Support:
+
+- Scheduled content.
+- Publishing status.
+- Bounded retries.
+- Duplicate prevention.
+- Failure reporting.
+- Approval requirements.
+- Per-account limits.
+- Automation pause controls.
+- Action history.
+
+Never rely on a Flutter background timer to publish posts reliably.
+
+Never blindly retry a publishing request whose outcome is uncertain.
+
+Acceptance criteria: scheduled jobs persist independently of the user's device, and unauthorized or unapproved actions cannot execute.
+
+Phase H — Analytics and notifications
+
+Display real metrics when available and clearly labelled demonstration metrics otherwise.
+
+Implement supported account insights, performance summaries, in-app notifications, and actionable error states.
+
+Do not fabricate real-world account statistics.
+
+Acceptance criteria: every metric has a known source or is explicitly identified as demo data.
+
+Phase I — Final verification
+
+- Run static analysis.
+- Run unit and integration tests.
+- Build every required target.
+- Test navigation and persistence.
+- Test loading, empty, error, and offline states.
+- Verify that secrets are not exposed.
+- Verify workspace isolation and authorization.
+- Verify that demo mode cannot accidentally publish to real accounts.
+- Document known limitations.
+
+Do not claim completion unless the relevant implementation and tests support that claim.
+
+6. Required engineering rules
+
+1. Build one phase at a time.
+2. Do not generate the entire application in one enormous change.
+3. Keep UI, business logic, persistence, and external API integrations separate.
+4. Reuse existing working code.
+5. Use typed models and explicit error handling.
+6. Avoid giant widgets and monolithic service classes.
+7. Do not hardcode credentials, account data, API responses, or fake success states into production logic.
+8. Validate all external inputs and AI outputs.
+9. Use backend authorization for privileged actions.
+10. Add tests for critical behavior.
+11. Keep documentation updated.
+12. After each phase, report changed files, completed functionality, tests run, remaining limitations, and the exact next step.
+
+7. Current task
+
+Do not immediately implement all features.
+
+Start with Phase A only.
+
+Inspect the repository and report:
+
+- Current project structure.
+- Existing framework and dependencies.
+- What is already implemented.
+- What is broken or incomplete.
+- Which existing components can be reused.
+- Recommended implementation phases based on the actual codebase.
+- Any blocking credentials or external integration requirements.
+
+Then wait for approval before beginning substantial implementation work.
+
+The objective is a reliable, attractive, testable SocialFlow AI application built incrementally, with real functionality wherever the necessary services and permissions are available.
