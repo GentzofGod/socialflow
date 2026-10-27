@@ -398,6 +398,82 @@ class _AuthScreenState extends ConsumerState<AuthScreen>
                         );
                       },
                     ),
+
+                    const SizedBox(height: 20),
+
+                    // Divider
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Divider(
+                            color: isDark ? AppColors.darkBorder : AppColors.lightBorder,
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 12),
+                          child: Text(
+                            'OR',
+                            style: textTheme.labelSmall?.copyWith(
+                              color: isDark ? AppColors.darkTextMuted : AppColors.lightTextMuted,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                        Expanded(
+                          child: Divider(
+                            color: isDark ? AppColors.darkBorder : AppColors.lightBorder,
+                          ),
+                        ),
+                      ],
+                    ),
+
+                    const SizedBox(height: 16),
+
+                    // Facebook OAuth Button
+                    OutlinedButton.icon(
+                      onPressed: _isLoading ? null : () async {
+                        final repo = ref.read(authRepositoryProvider);
+                        if (!repo.isConfigured) {
+                          setState(() => _errorMessage =
+                              'Supabase is not configured yet. Please check your .env credentials.');
+                          return;
+                        }
+                        setState(() {
+                          _isLoading = true;
+                          _errorMessage = null;
+                        });
+                        try {
+                          await repo.signInWithFacebook();
+                        } catch (e) {
+                          if (mounted) {
+                            setState(() => _errorMessage = 'Facebook Sign In error: $e');
+                          }
+                        } finally {
+                          if (mounted) setState(() => _isLoading = false);
+                        }
+                      },
+                      style: OutlinedButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(vertical: 14),
+                        side: BorderSide(
+                          color: const Color(0xFF1877F2).withValues(alpha: 0.5),
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                      icon: const Icon(
+                        Icons.facebook_rounded,
+                        color: Color(0xFF1877F2),
+                        size: 22,
+                      ),
+                      label: const Text(
+                        'Continue with Facebook',
+                        style: TextStyle(
+                          fontWeight: FontWeight.w600,
+                          fontSize: 14,
+                        ),
+                      ),
+                    ),
                   ],
                 ),
               ),

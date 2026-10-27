@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../../core/services/supabase_service.dart';
@@ -50,6 +51,17 @@ class AuthRepository {
     await _client.auth.signInWithOtp(
       email: email,
       emailRedirectTo: 'socialflow://auth-callback',
+    );
+  }
+
+  Future<bool> signInWithFacebook() async {
+    if (_client == null) {
+      throw Exception('Supabase is not configured. Check your .env file.');
+    }
+    return await _client.auth.signInWithOAuth(
+      OAuthProvider.facebook,
+      scopes: 'email,public_profile,pages_show_list,pages_manage_posts,pages_read_engagement',
+      redirectTo: kIsWeb ? null : 'socialflow://auth-callback',
     );
   }
 
