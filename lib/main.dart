@@ -1,35 +1,104 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'core/router/app_router.dart';
 import 'core/theme/app_theme.dart';
-import 'core/theme/theme_provider.dart';
+import 'features/history/presentation/history_screen.dart';
+import 'features/scheduler/presentation/scheduler_screen.dart';
+import 'features/studio/presentation/omniflow_studio_screen.dart';
 
-import 'core/services/supabase_service.dart';
-
-void main() async {
+void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  await SupabaseService.initialize();
-  runApp(
-    const ProviderScope(
-      child: SocialFlowApp(),
-    ),
-  );
+  runApp(const OmniFlowApp());
 }
 
-class SocialFlowApp extends ConsumerWidget {
-  const SocialFlowApp({super.key});
+class OmniFlowApp extends StatefulWidget {
+  const OmniFlowApp({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final themeMode = ref.watch(themeProvider);
+  State<OmniFlowApp> createState() => _OmniFlowAppState();
+}
 
-    return MaterialApp.router(
-      title: 'SocialFlow AI',
+class _OmniFlowAppState extends State<OmniFlowApp> {
+  ThemeMode _themeMode = ThemeMode.dark;
+
+  void _toggleTheme() {
+    setState(() {
+      _themeMode = _themeMode == ThemeMode.dark ? ThemeMode.light : ThemeMode.dark;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'OmniFlow AI — Content Repurposing Studio',
       debugShowCheckedModeBanner: false,
-      themeMode: themeMode,
+      themeMode: _themeMode,
       theme: AppTheme.lightTheme,
       darkTheme: AppTheme.darkTheme,
-      routerConfig: ref.watch(routerProvider),
+      home: MainShellScreen(
+        isDark: _themeMode == ThemeMode.dark,
+        onToggleTheme: _toggleTheme,
+      ),
+    );
+  }
+}
+
+class MainShellScreen extends StatefulWidget {
+  final bool isDark;
+  final VoidCallback onToggleTheme;
+
+  const MainShellScreen({
+    super.key,
+    required this.isDark,
+    required this.onToggleTheme,
+  });
+
+  @override
+  State<MainShellScreen> createState() => _MainShellScreenState();
+}
+
+class _MainShellScreenState extends State<MainShellScreen> {
+  int _currentIndex = 0;
+
+  final List<Widget> _screens = const [
+    OmniFlowStudioScreen(),
+    SchedulerScreen(),
+    HistoryScreen(),
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: IndexedStack(
+        index: _currentIndex,
+        children: _screens,
+      ),
+      bottomNavigationBar: NavigationBar(
+        selectedIndex: _currentIndex,
+        onDestinationSelected: (idx) => setState(() => _currentIndex = idx),
+        destinations: const [
+          NavigationDestination(
+            icon: Icon(Icons.bolt_outlined),
+            selectedIcon: Icon(Icons.bolt_rounded),
+            label: 'Studio',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.calendar_today_outlined),
+            selectedIcon: Icon(Icons.calendar_today_rounded),
+            label: 'Schedule',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.folder_outlined),
+            selectedIcon: Icon(Icons.folder_rounded),
+            label: 'Library',
+          ),
+        ],
+      ),
+      floatingActionButton: FloatingActionButton.small(
+        onPressed: widget.onToggleTheme,
+        tooltip: 'Toggle Theme',
+        child: Icon(
+          widget.isDark ? Icons.light_mode_rounded : Icons.dark_mode_rounded,
+        ),
+      ),
     );
   }
 }

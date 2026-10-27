@@ -1,19 +1,13 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:socialflow/main.dart';
 
 void main() {
-  testWidgets('SocialFlowApp launches and renders Dashboard', (WidgetTester tester) async {
-    await tester.pumpWidget(
-      const ProviderScope(
-        child: SocialFlowApp(),
-      ),
-    );
-    await tester.pumpAndSettle();
+  testWidgets('OmniFlowApp launches and renders Studio', (WidgetTester tester) async {
+    await tester.pumpWidget(const OmniFlowApp());
+    await tester.pump();
 
-    // Verify app brand and welcome title appear
-    expect(find.text('SocialFlow AI'), findsWidgets);
-    expect(find.text('Welcome to SocialFlow AI'), findsOneWidget);
-    expect(find.text('Live Pipeline Telemetry'), findsOneWidget);
+    // Verify app brand appears
+    expect(find.text('OmniFlow Studio'), findsOneWidget);
+    expect(find.text('Source Anchor Content'), findsOneWidget);
   });
 }
